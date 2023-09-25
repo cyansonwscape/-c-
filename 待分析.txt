@@ -1,0 +1,18 @@
+int have_bigbracket = 0;
+int b;
+for (int a=1; a<=5; a=a+1 ){
+b=b+a;
+}
+
+cout<<"the value off b :"<<endl<< b;
+cout<<"the world"<< endl;
+cout<<"123"<< endl;
+
+have_bigbracket = a*；
+
+cout<<"bigbracket"<<have_bigbracket<<endl;
+
+cout<<endl;
+
+
+ 

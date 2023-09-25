@@ -1,0 +1,101 @@
+DATA SEGMENT
+have_bigbracket	DW	 0
+b	DW	 0
+a	DW	 0
+endl	DB	 13,10,'$';endl的字符串表示
+string0	DB	"the value off b :",'$';常量字符串
+string1	DB	"the world",'$';常量字符串
+string2	DB	"123",'$';常量字符串
+temporarysave0	DW	 0;计算表达式时的变量暂存地址
+temporarysave1	DW	 0;计算表达式时的变量暂存地址
+temporarysave2	DW	 0;计算表达式时的变量暂存地址
+temporarysave3	DW	 0;计算表达式时的变量暂存地址
+temporarysave4	DW	 0;计算表达式时的变量暂存地址
+temporarysave5	DW	 0;计算表达式时的变量暂存地址
+temporarysave6	DW	 0;计算表达式时的变量暂存地址
+temporarysave7	DW	 0;计算表达式时的变量暂存地址
+temporarysave8	DW	 0;计算表达式时的变量暂存地址
+temporarysave9	DW	 0;计算表达式时的变量暂存地址
+waitcompare0	DW	 0;比较值的暂存地址
+waitcompare1	DW	 0 ;比较值的暂存地址
+DATA ENDS
+CODE SEGMENT
+	ASSUME CS:CODE,DS:DATA
+START:
+	MOV AX,DATA  
+	MOV DS,AX  
+	MOV	AX,0
+	MOV	have_bigbracket,AX
+	MOV	AX,1
+	MOV	a,AX
+	flag00:
+	MOV	AX,a
+	MOV	waitcompare0,AX
+	MOV	AX,5
+	MOV	waitcompare1,AX
+	MOV	AX,waitcompare0
+	CMP	AX,waitcompare1
+	JG	flag01
+	MOV	AX,b
+	ADD	AX,a
+	MOV	temporarysave0,AX
+	MOV	AX,temporarysave0
+	MOV	b,AX
+	MOV	AX,a
+	ADD	AX,1
+	MOV	temporarysave0,AX
+	MOV	AX,temporarysave0
+	MOV	a,AX
+	JMP	flag00
+	flag01:
+	LEA  DX, string0
+	MOV  AH, 9
+	INT  21H 
+	LEA  DX, endl
+	MOV  AH, 9
+	INT  21H 
+	MOV 	AX,b
+	CALL	COUTD
+	LEA  DX, string1
+	MOV  AH, 9
+	INT  21H 
+	LEA  DX, endl
+	MOV  AH, 9
+	INT  21H 
+	LEA  DX, string2
+	MOV  AH, 9
+	INT  21H 
+	LEA  DX, endl
+	MOV  AH, 9
+	INT  21H 
+	LEA  DX, endl
+	MOV  AH, 9
+	INT  21H 
+	JMP forend	;跳转至结束
+COUTD:  	; 将双字AX化为10 进制并显示
+PUSH BX; BX, CX, DX 入栈，保存现场
+PUSH CX
+PUSH DX
+MOV BX, 10; 转换成10进制，所以BX <= 10
+XOR CX, CX; 清空 CX
+C0: 
+XOR DX, DX; 清空 DX
+DIV BX; AX 除以 BX, DX <= 余数, AX <= 商
+OR DX, 0E30H; DX | 0E30H 结果 DH = 0EH DL = 30H + 余数
+PUSH DX; 商的ASCII码入栈
+INC CX; CX 自加 用于 出栈时计数
+CMP AX, 0; 比较AX 与 0
+JNZ C0; 若AX(商) 不为 0 则 高位还有数 跳转到C0 继续进行计算
+C1: 
+POP AX; 出栈到AX 此时 AH = 0EH AL = 十进制数到ASCII码
+INT 10H; AH = 0EH 将AL 输出到屏幕
+LOOP C1; CX 不为0 则跳转到C1继续出栈 输出
+POP DX; BX, CX, DX 出栈，恢复现场
+POP CX
+POP BX
+RET
+forend:	;结束标志位
+	MOV AH,4CH 
+	INT 21H   
+CODE  ENDS  
+	END  START   
