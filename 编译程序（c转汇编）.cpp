@@ -121,8 +121,6 @@ for (int i = 0; i < sentence_vector.size(); i++)
 
 AnalyseAllSentence();
 TranslateAllSentence();
-
-
 //for (int i = 0; i < objectcode_vector.size(); i++) {
 //
 //	cout << objectcode_vector[i];
